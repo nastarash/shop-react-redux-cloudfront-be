@@ -1,0 +1,124 @@
+openapi: 3.0.1
+info:
+  title: defaultTitle
+  description: defaultDescription
+  version: "0.1"
+servers:
+  - url: https://zlszw61kh8.execute-api.eu-west-1.amazonaws.com
+paths:
+  /dev/products:
+    get:
+      tags:
+        - Books
+      description: Get list of books
+      summary: Get list of books
+      responses:
+        "200":
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Products"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+      servers:
+        - url: https://zlszw61kh8.execute-api.eu-west-1.amazonaws.com
+    servers:
+      - url: https://zlszw61kh8.execute-api.eu-west-1.amazonaws.com
+  /dev/products/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        description: Product id
+        schema:
+          type: string
+          example: 001
+    get:
+      tags:
+        - Books
+      summary: Get product by id
+      description: Get product by id
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  product:
+                    $ref: "#/components/schemas/Product"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+    servers:
+      - url: https://zlszw61kh8.execute-api.eu-west-1.amazonaws.com
+components:
+  responses:
+    NotFound:
+      description: Item not found
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/NotFound"
+    InternalServerError:
+      description: Common server error
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/InternalServerError"
+  schemas:
+    NotFound:
+      type: object
+      properties:
+        statusCode:
+          type: number
+          example: 404
+        errorMessage:
+          type: string
+          example: "Product not found."
+    InternalServerError:
+      type: object
+      properties:
+        statusCode:
+          type: number
+          example: 500
+        error:
+          type: object
+          properties:
+            name:
+              type: string
+              example: "INTERNAL_SERVER"
+            message:
+              type: string
+              example: "Internal server error"
+    Products:
+      type: object
+      properties:
+        products:
+          type: array
+          items:
+            $ref: "#/components/schemas/Product"
+    Product:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 002
+        author:
+          type: string
+          example: George Orwell
+        price:
+          type: integer
+          example: 123
+        title:
+          type: string
+          example: "Harry Potter and the Goblet of Fire"
+        detail:
+          type: string
+          example: "In the year 1984, civilization has been damaged by war, civil conflict, and revolution. Airstrip One (formerly known as Great Britain) is a province of Oceania, one of the three totalitarian"
+        url:
+          type: string
+          example: "http://test.com"

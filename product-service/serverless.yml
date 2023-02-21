@@ -1,0 +1,35 @@
+service: product-service
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  stage: dev
+  region: eu-west-1
+
+plugins:
+  - serverless-webpack
+  - serverless-jest-plugin
+
+custom:
+  webpack:
+    webpackConfig: 'webpack.config.js'
+    includeModules: true
+
+functions:
+  getProductsList:
+    handler: handlers/getProductsList.getProductsList
+    events:
+      - http:
+          path: /products
+          method: get
+  getProductsById:
+    handler: handlers/getProductsById.getProductsById
+    events:
+      - http:
+          path: /products/{id}
+          method: get
+          request:
+            parameters:
+              paths:
+                id: true
