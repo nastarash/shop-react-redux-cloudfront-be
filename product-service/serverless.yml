@@ -6,7 +6,21 @@ provider:
   runtime: nodejs12.x
   stage: dev
   region: eu-west-1
-
+  iam:
+    role: 
+      statements:
+        - Effect: "Allow"
+          Action:
+            - "dynamodb:GetItem"
+            - "dynamodb:DeleteItem"
+            - "dynamodb:Scan"
+            - "dynamodb:Query"
+            - "dynamodb:PutItem"
+          Resource: "*"
+  environment:
+    PRODUCTS_TABLE: products
+    STOCKS_TABLE: stocks
+    
 plugins:
   - serverless-webpack
   - serverless-jest-plugin
@@ -15,6 +29,7 @@ custom:
   webpack:
     webpackConfig: 'webpack.config.js'
     includeModules: true
+    dbTableName: "products"
 
 functions:
   getProductsList:
@@ -22,7 +37,7 @@ functions:
     events:
       - http:
           path: /products
-          method: get
+          method: get  	
   getProductsById:
     handler: handlers/getProductsById.getProductsById
     events:
@@ -33,3 +48,9 @@ functions:
             parameters:
               paths:
                 id: true
+  createProduct:
+    handler: handlers/createProduct.createProduct
+    events:
+      - http:
+          path: /products
+          method: post

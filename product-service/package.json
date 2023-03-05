@@ -19,7 +19,9 @@
   "homepage": "https://github.com/nastarash/shop-react-redux-cloudfront-be#readme",
   "dependencies": {
     "aws-sdk": "^2.1318.0",
-    "serverless": "^3.27.0"
+    "lodash": "^4.17.21",
+    "serverless": "^3.27.0",
+    "uuid": "^9.0.0"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.20.2",
