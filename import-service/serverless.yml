@@ -1,0 +1,51 @@
+service: import-service
+
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  region: eu-west-1
+  stage: dev
+  iam:
+    role: 
+      statements:
+        - Effect: "Allow"
+          Action: "s3:ListBucket"
+          Resource: "arn:aws:s3:::uploded"
+        - Effect: "Allow"
+          Action:
+            - "s3:*"
+          Resource: "arn:aws:s3:::uploded/*"
+  environment:
+    UPLOAD_BUCKET: uploded
+
+plugins:
+  - serverless-webpack
+  - serverless-jest-plugin
+
+custom:
+  webpack:
+    webpackConfig: 'webpack.config.js'
+    includeModules: true
+
+functions:
+  importProductsFile:
+    handler: handlers/importProductsFile.importProductsFile
+    events:
+      - http:
+          path: /import
+          method: get  	
+          request:
+            parameters:
+              querystrings:
+                name: true
+  importFileParser:
+    handler: handlers/importFileParser.importFileParser
+    events:
+      - s3:
+          bucket: uploded
+          event: s3:ObjectCreated:*
+          rules:
+            - prefix: uploaded/
+          existing: true

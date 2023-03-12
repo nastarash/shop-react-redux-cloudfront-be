@@ -1,8 +1,8 @@
 "use strict";
 import { DynamoDB } from "aws-sdk";
 import { v4 } from "uuid";
-import ERROR_MESSAGE from "../constants/constants.js";
-import headers from "../constants/headers.js";
+import ERROR_MESSAGE from "../../constants/constants.js";
+import headers from "../../constants/headers.js";
 import { validateBody } from "../utils/utils.js";
 
 const dynamoDb = new DynamoDB.DocumentClient();

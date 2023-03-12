@@ -1,7 +1,7 @@
 "use strict";
 import { DynamoDB } from "aws-sdk";
-import ERROR_MESSAGE from "../constants/constants.js";
-import headers from "../constants/headers.js";
+import ERROR_MESSAGE from "../../constants/constants.js";
+import headers from "../../constants/headers.js";
 import { mergeById } from "../utils/utils.js";
 
 const dynamoDb = new DynamoDB.DocumentClient();
