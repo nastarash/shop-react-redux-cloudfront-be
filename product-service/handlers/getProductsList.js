@@ -4,10 +4,11 @@ import ERROR_MESSAGE from "../../constants/constants.js";
 import headers from "../../constants/headers.js";
 import { mergeById } from "../utils/utils.js";
 
-const dynamoDb = new DynamoDB.DocumentClient();
-
 export async function getProductsList(event) {
   console.log(event);
+
+  const dynamoDb = new DynamoDB.DocumentClient();
+
 
   try {
     const { Items: products } = await dynamoDb

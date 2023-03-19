@@ -1,5 +1,5 @@
 service: product-service
-frameworkVersion: '3'
+frameworkVersion: "3"
 
 provider:
   name: aws
@@ -7,7 +7,7 @@ provider:
   stage: dev
   region: eu-west-1
   iam:
-    role: 
+    role:
       statements:
         - Effect: "Allow"
           Action:
@@ -17,17 +17,59 @@ provider:
             - "dynamodb:Query"
             - "dynamodb:PutItem"
           Resource: "*"
+        - Effect: "Allow"
+          Action: "sqs:*"
+          Resource:
+            - Fn::GetAtt: [SQSQueue, Arn]
+        - Effect: "Allow"
+          Action: "lambda:InvokeFunction"
+          Resource: "arn:aws:lambda:eu-west-1:530201097540:function:product-service-dev-createProduct"
+        - Effect: "Allow"
+          Action: "sns:*"
+          Resource:
+            Ref: SNSTopic
+
   environment:
     PRODUCTS_TABLE: products
     STOCKS_TABLE: stocks
-    
+    CREATE_PRODUCT: product-service-dev-createProduct
+    SNS_ARN:
+      Ref: SNSTopic
+
+resources:
+  Resources:
+    SQSQueue:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: catalogItemsQueue
+    SNSTopic:
+      Type: AWS::SNS::Topic
+      Properties:
+        TopicName: createProductTopic
+    SNSSubscription:
+      Type: AWS::SNS::Subscription
+      Properties:
+        Endpoint: a.rashinskaya@gmail.com
+        Protocol: email
+        TopicArn:
+          Ref: SNSTopic
+        FilterPolicy: { "count": [{ "numeric": ["<", 40] }] }
+    SNSSubscriptionFilter:
+      Type: AWS::SNS::Subscription
+      Properties:
+        Endpoint: Guts-world@mail.ru
+        Protocol: email
+        TopicArn:
+          Ref: SNSTopic
+        FilterPolicy: { "count": [{ "numeric": [">", 40] }] }
+
 plugins:
   - serverless-webpack
   - serverless-jest-plugin
 
 custom:
   webpack:
-    webpackConfig: 'webpack.config.js'
+    webpackConfig: "webpack.config.js"
     includeModules: true
     dbTableName: "products"
 
@@ -37,7 +79,7 @@ functions:
     events:
       - http:
           path: /products
-          method: get  	
+          method: get
   getProductsById:
     handler: handlers/getProductsById.getProductsById
     events:
@@ -54,3 +96,12 @@ functions:
       - http:
           path: /products
           method: post
+  catalogBatchProcess:
+    handler: handlers/catalogBatchProcess.catalogBatchProcess
+    events:
+      - sqs:
+          batchSize: 5
+          arn:
+            Fn::GetAtt:
+              - SQSQueue
+              - Arn

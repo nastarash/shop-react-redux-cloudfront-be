@@ -21,3 +21,9 @@ export const validateBody = ({ price, title, description, count }) => {
   const isCountValid = count && isNumber(count);
   return isPriceValid && isTitleValid && isDescriptionValid && isCountValid;
 };
+
+export const convertToProductObject = (productObject) => {
+  const productString = Object.values(productObject).join('');
+  const [title, description, price, count] = productString.split(";");
+  return { title, description, price: Number(price), count: Number(count) };
+};
