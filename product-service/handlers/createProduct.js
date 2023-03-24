@@ -1,29 +1,31 @@
 "use strict";
 import { DynamoDB } from "aws-sdk";
 import { v4 } from "uuid";
-import ERROR_MESSAGE from "../constants/constants.js";
-import headers from "../constants/headers.js";
-import { validateBody } from "../utils/utils.js";
-
-const dynamoDb = new DynamoDB.DocumentClient();
+import ERROR_MESSAGE from "../../constants/constants.js";
+import headers from "../../constants/headers.js";
+import { validateBody, convertToProductObject } from "../utils/utils.js";
 
 export async function createProduct(event) {
-  console.log(event);
+  const dynamoDb = new DynamoDB.DocumentClient();
 
-  const { title, description, price, count } = JSON.parse(event.body || "{}");
+  const { title, description, price, count } = convertToProductObject(
+    JSON.parse(event.body || "{}")
+  );
   const productId = v4();
   const productItem = {
     id: productId,
     title,
     description,
-    price,
+    price: +price,
   };
   const stockItem = {
     product_id: productId,
-    count,
+    count: +count,
   };
+  const productPayload = { ...productItem, ...stockItem };
 
-  if (!validateBody({ title, description, price, count })) {
+  if (!validateBody(productPayload)) {
+    console.log(ERROR_MESSAGE.INVALID_PRODUCT_DATA, productPayload);
     return {
       statusCode: 400,
       body: JSON.stringify(ERROR_MESSAGE.INVALID_PRODUCT_DATA),
@@ -58,6 +60,7 @@ export async function createProduct(event) {
       body: JSON.stringify({ id: productId, title, description, price, count }),
     };
   } catch (error) {
+    console.log(error);
     return {
       statusCode: 500,
       body: JSON.stringify(error),
