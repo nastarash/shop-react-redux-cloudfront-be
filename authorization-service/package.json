@@ -1,0 +1,37 @@
+{
+  "name": "authorization-service",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest",
+    "deploy": "sls deploy"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nastarash/shop-react-redux-cloudfront-be.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nastarash/shop-react-redux-cloudfront-be/issues"
+  },
+  "homepage": "https://github.com/nastarash/shop-react-redux-cloudfront-be#readme",
+  "dependencies": {
+    "aws-sdk": "^2.1318.0",
+    "lodash": "^4.17.21",
+    "serverless": "^3.27.0",
+    "uuid": "^9.0.0"
+  },
+  "devDependencies": {
+    "@babel/preset-env": "^7.20.2",
+    "aws-sdk-mock": "^5.8.0",
+    "babel-jest": "^29.4.3",
+    "jest": "^29.4.3",
+    "serverless-dotenv-plugin": "^6.0.0",
+    "serverless-functions-base-path": "^1.0.33",
+    "serverless-jest-plugin": "^0.4.0",
+    "serverless-webpack": "^5.11.0",
+    "webpack-node-externals": "^3.0.0"
+  }
+}
